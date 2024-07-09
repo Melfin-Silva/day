@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Vignesh</title>
+    <style>
+        body {
+            background-color: #111;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .firefly {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            pointer-events: none;
+            width: 0.4vw;
+            height: 0.4vw;
+            margin: -0.2vw 0 0 9.8vw;
+        }
+
+        .firefly::before,
+        .firefly::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transform-origin: -10vw;
+        }
+
+        .firefly::before {
+            background: var(--bk-color, aliceblue);
+            opacity: 0.4;
+            animation: drift ease alternate infinite;
+        }
+
+        .firefly::after {
+            background: white;
+            opacity: 0;
+            box-shadow: 0 0 0vw 0vw var(--light-color, yellow);
+            animation: drift ease alternate infinite, flash ease infinite;
+        }
+
+        @keyframes drift {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes flash {
+
+            0%,
+            30%,
+            100% {
+                opacity: 0;
+                box-shadow: 0 0 0vw 0vw var(--light-color, yellow);
+            }
+
+            5% {
+                opacity: 1;
+                box-shadow: 0 0 2vw 0.4vw var(--light-color, yellow);
+            }
+        }
+
+        .falling-letters {
+            position: absolute;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            opacity: 0;
+            animation: fall 5s forwards, flickers 1.5s infinite alternate;
+        }
+
+        .second-message {
+            display: none;
+        }
+
+        @keyframes flickers {
+
+            0%,
+            18%,
+            22%,
+            25%,
+            53%,
+            57%,
+            100% {
+                text-shadow:
+                    0 0 4px #fff,
+                    0 0 11px #fff,
+                    0 0 19px #fff,
+                    0 0 40px #0fa,
+                    0 0 80px #0fa,
+                    0 0 90px #0fa,
+                    0 0 100px #0fa,
+                    0 0 150px #0fa;
+            }
+
+            20%,
+            24%,
+            55% {
+                text-shadow: none;
+            }
+        }
+
+        .glow-button {
+            display: none;
+            margin-top: 25%;
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #00ffcc;
+            color: #111;
+            border: none;
+            border-radius: 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+            animation: glow 1s infinite alternate;
+            text-decoration: none; /* Remove underline from link */
+        }
+
+        .glow-button.show {
+            display: inline-block;
+        }
+
+        @keyframes fall {
+            0% {
+                top: -100px;
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 50%;
+                opacity: 0;
+            }
+        }
+
+        @keyframes glow {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 0 60px rgba(0, 255, 204, 0.9);
+            }
+        }
+
+        .firefly {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: #fdd835;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: flicker 3s infinite linear, moveRandomly 5s infinite linear;
+            pointer-events: none;
+        }
+
+        @keyframes flicker {
+
+            0%,
+            100% {
+                opacity: 0.8;
+            }
+
+            50% {
+                opacity: 0.2;
+            }
+        }
+
+        @keyframes moveRandomly {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(calc(100vw - 8px), calc(100vh - 8px));
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="fireflies-container"></div>
+    <div id="container">
+        <div class="falling-letters">Hey, hope you are doing good</div>
+        <div class="falling-letters second-message">It's a big day, let's start!</div>
+        <a href="firework.html" class="glow-button">Switch on the lights</a>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var firstMessage = document.querySelector('.falling-letters');
+            var secondMessage = document.querySelector('.second-message');
+            var glowButton = document.querySelector('.glow-button');
+
+            firstMessage.addEventListener('animationend', function () {
+                firstMessage.style.display = 'none';
+                secondMessage.style.display = 'block';
+
+                secondMessage.addEventListener('animationend', function () {
+                    glowButton.style.display = 'inline-block';
+                    const containerId = 'fireflies-container';
+                    const flyQty = 40;
+                    createFireflies(containerId, flyQty);
+                });
+            });
+
+            function createFireflies(containerId, flyQty) {
+                const firefliesContainer = document.getElementById(containerId);
+
+                for (let i = 1; i <= flyQty; i++) {
+                    const steps = Math.floor(Math.random() * 12) + 16;
+                    const rotateSpeed = `${Math.floor(Math.random() * 10) + 8}s`;
+
+                    const firefly = document.createElement('div');
+                    firefly.classList.add('firefly');
+                    firefly.style.setProperty('--bk-color', 'aliceblue');
+                    firefly.style.setProperty('--light-color', 'yellow');
+
+                    const before = document.createElement('div');
+                    before.style.position = 'absolute';
+                    before.style.width = '100%';
+                    before.style.height = '100%';
+                    before.style.borderRadius = '50%';
+                    firefly.appendChild(before);
+
+                    const after = document.createElement('div');
+                    after.style.position = 'absolute';
+                    after.style.width = '100%';
+                    after.style.height = '100%';
+                    after.style.borderRadius = '50%';
+                    after.style.background = 'white';
+                    after.style.opacity = '0';
+                    after.style.boxShadow = '0 0 0vw 0vw var(--light-color)';
+                    firefly.appendChild(after);
+
+                    const moveKeyframes = `move${i}`;
+                    const moveAnimation = document.createElement('style');
+                    moveAnimation.textContent = `
+                        @keyframes ${moveKeyframes} {
+                            ${Array.from({ length: steps }, (_, step) => `
+                                ${Math.round((step / (steps - 1)) * 100)}% {
+                                    transform: translate(${Math.random() * 100 - 50}vw, ${Math.random() * 100 - 50}vh) scale(${Math.random() * 0.75 + 0.25});
+                                }
+                            `).join('')}
+                        }
+                    `;
+                    document.head.appendChild(moveAnimation);
+
+                    firefly.style.animation = `${moveKeyframes} ${Math.floor(Math.random() * 200) + 100}s alternate infinite`;
+                    before.style.animation = 'drift ease alternate infinite';
+                    after.style.animation = `drift ease alternate infinite, flash ease infinite ${Math.floor(Math.random() * 6) + 5}s ${Math.floor(Math.random() * 5000)}ms`;
+
+                    firefliesContainer.appendChild(firefly);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

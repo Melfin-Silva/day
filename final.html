@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vertical Slideshow with Description</title>
+  <style>
+    /* RESET RULES & HELPER CLASSES */
+    * {
+      padding: 0;
+      margin: 0;
+      box-sizing: border-box;
+    }
+
+    ul {
+      list-style: none;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+    }
+
+    body {
+      font: 20px/28px sans-serif;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slideshow {
+      position: relative;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .slides {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      height: 100%;
+      position: relative;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .slide.is-active {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    .cover {
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      height: 100%;
+    }
+
+    .description {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.4s;
+      background-color: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+
+    .slide.is-active .description {
+      opacity: 1;
+    }
+
+    /* BUTTONS BELOW */
+    .buttons-below {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .buttons-below button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .buttons-below button:hover {
+      background-color: #0056b3;
+    }
+
+    /* FOOTER */
+    footer {
+      font-size: 1rem;
+      text-align: right;
+      padding: 10px 0;
+      border-top: 1px solid #ccc;
+    }
+
+    footer span {
+      color: #e31b23;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="slideshow">
+      <div class="slides">
+        <div class="slide is-active">
+          <div class="cover" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/unsplash_nature4.jpg);">
+            <div class="description">
+              <p>Haha Welcom1</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="cover" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/unsplash_nature1.jpg);">
+            <div class="description">
+              <p>Haha Welcom2</p>
+            </div>
+          </div>
+        </div>
+        <div class="slide">
+          <div class="cover" style="background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/162656/unsplash_nature6.jpg);">
+            <div class="description">
+              <p>Haha Welcom3</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="buttons-below">
+      <button onclick="prevSlide()">Previous</button>
+      <button onclick="nextSlide()">Next</button>
+    </div>
+
+    <footer>
+      <small>Made with <span>❤</span> by <a href="http://georgemartsoukos.com/" target="_blank">George Martsoukos</a></small>
+    </footer>
+  </div>
+
+  <script>
+    // JavaScript fallback for navigation buttons
+    const slides = document.querySelectorAll(".slide");
+    let currentSlide = 0;
+
+    function showSlide(n) {
+      slides[currentSlide].classList.remove("is-active");
+      currentSlide = (n + slides.length) % slides.length;
+      slides[currentSlide].classList.add("is-active");
+    }
+
+    function prevSlide() {
+      showSlide(currentSlide - 1);
+    }
+
+    function nextSlide() {
+      showSlide(currentSlide + 1);
+    }
+
+    // Automatic slideshow (optional)
+    setInterval(nextSlide, 3000); // Change slide every 3 seconds (3000 ms)
+  </script>
+</body>
+</html>

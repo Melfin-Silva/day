@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fireworks Show</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: black;
+        }
+        canvas {
+            display: block;
+        }
+        .firework-sound {
+            display: none;
+        }
+        .neon-button {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px 40px;
+            color: #fff;
+            font-size: 24px;
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            text-decoration: none;
+            border: 4px solid #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #fff, 0 0 30px #ff00ff ;
+            opacity: 0;
+            transition: opacity 2s;
+            animation: neon-flicker 2s infinite alternate;
+        }
+        @keyframes neon-flicker {
+            0%, 100% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff;
+            }
+            10%, 90% {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff00ff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff;
+            }
+            20%, 80% {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #ff00ff, 0 0 20px #ff00ff, 0 0 25px #ff00ff, 0 0 30px #ff00ff, 0 0 35px #ff00ff;
+            }
+            30%, 70% {
+                text-shadow: 0 0 15px #fff, 0 0 25px #fff, 0 0 35px #ff00ff, 0 0 45px #ff00ff, 0 0 55px #ff00ff, 0 0 65px #ff00ff, 0 0 75px #ff00ff;
+            }
+            40%, 60% {
+                text-shadow: 0 0 20px #fff, 0 0 30px #fff, 0 0 40px #ff00ff, 0 0 50px #ff00ff, 0 0 60px #ff00ff, 0 0 70px #ff00ff, 0 0 80px #ff00ff;
+            }
+            50% {
+                text-shadow: 0 0 25px #fff, 0 0 35px #fff, 0 0 45px #ff00ff, 0 0 55px #ff00ff, 0 0 65px #ff00ff, 0 0 75px #ff00ff, 0 0 85px #ff00ff;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <audio class="firework-sound" id="firework-sound" src="fireworks.mp3"></audio>
+    <a href="butterfly.html" class="neon-button" id="neon-button">Its Time To Celebrate, Wondering what?..Let's Go</a>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const fireworkSound = document.getElementById('firework-sound');
+        const neonButton = document.getElementById('neon-button');
+
+        function random(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+
+        function createParticle(x, y, color, angle, speed) {
+            return {
+                x,
+                y,
+                color,
+                angle,
+                speed,
+                alpha: 1,
+                update() {
+                    this.speed *= 0.98;
+                    this.x += Math.cos(this.angle) * this.speed;
+                    this.y += Math.sin(this.angle) * this.speed + 0.5;
+                    this.alpha -= 0.01;
+                },
+                draw() {
+                    ctx.globalAlpha = this.alpha;
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            };
+        }
+
+        function createFirework() {
+            const x = random(0, canvas.width);
+            const y = canvas.height;
+            const targetY = random(0, canvas.height / 2);
+            const color = `hsl(${random(0, 360)}, 100%, 50%)`;
+            const particles = [];
+            const count = 100;
+            let exploded = false;
+
+            return {
+                x,
+                y,
+                targetY,
+                color,
+                particles,
+                exploded,
+                update() {
+                    if (!this.exploded) {
+                        this.y -= 5;
+                        if (this.y <= this.targetY) {
+                            this.exploded = true;
+                            fireworkSound.currentTime = 0;
+                            fireworkSound.play();
+                            for (let i = 0; i < count; i++) {
+                                this.particles.push(createParticle(this.x, this.y, this.color, random(0, Math.PI * 2), random(1, 10)));
+                            }
+                        }
+                    } else {
+                        this.particles.forEach(particle => particle.update());
+                    }
+                },
+                draw() {
+                    if (!this.exploded) {
+                        ctx.globalAlpha = 1;
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else {
+                        this.particles.forEach(particle => particle.draw());
+                    }
+                }
+            };
+        }
+
+        let fireworks = [];
+
+        function animate() {
+            ctx.globalAlpha = 0.1;
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.globalAlpha = 1;
+
+            fireworks = fireworks.filter(firework => {
+                return firework.exploded ? firework.particles.some(particle => particle.alpha > 0) : true;
+            });
+
+            if (Math.random() < 0.05) {
+                fireworks.push(createFirework());
+            }
+
+            fireworks.forEach(firework => {
+                firework.update();
+                firework.draw();
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Show the neon button after 5 seconds
+        setTimeout(() => {
+            neonButton.style.display = 'block';
+            neonButton.style.opacity = '1';
+        }, 5000);
+    </script>
+</body>
+</html>

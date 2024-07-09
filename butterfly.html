@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Butterfly Message</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-image: url('butterfly1.jpeg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: #fff;
+        }
+        
+        .message {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            animation: colorchange 3s infinite;
+            margin-bottom: 17px;
+            margin-top: 25px;
+        }
+        @keyframes colorchange {
+            0% { color: #8a5d34; }
+            15% { color: #784c00; }
+            30% { color: #54361b; }
+            45% { color: #b08760; }
+            60% { color: #a65b00; }
+            75% { color: #503c34; }
+            90% { color: #5c5c00; }
+            100% { color: #005e71; }
+        }
+        .floating-button {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #ffccbc;
+            color: #00782e;
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .floating-button:hover {
+            background-color: #ffb0a0;
+        }
+    </style>
+</head>
+<body>
+    <div class="message">
+        We wish you a very happy birthday🎂<br> 
+        and a wonderful, successful year ahead🥳.<br>
+        Let all your wishes😍 and <br>dreams come true❤️.<br> 
+        Haha😂, <br>we didn't say anything about those bad dreams!<br>
+        You are one of the great souls we have ever met<br>
+        More than TL and more than PM You are Brother!<br> 
+        It's a great day🥳🥳, Vignesh.
+    </div>
+    <a href="envelope.html"><button class="floating-button">You've got some Envelops Too!📩</button></a>
+</body>
+</html>
